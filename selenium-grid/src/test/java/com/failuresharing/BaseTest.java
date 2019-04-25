@@ -1,10 +1,9 @@
 package com.failuresharing;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.selenium.WebDriver;
@@ -14,26 +13,24 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class BaseTest {
-    private WebDriver driver;
+    private static WebDriver driver;
 
-    
-    @BeforeEach
-    public void setUp() throws MalformedURLException {
-        GridLauncherV3.main(new String[] { "-role", "hub", "-port", "4444" });
+    @BeforeAll
+    public static void setUp() throws MalformedURLException {
         WebDriverManager.chromedriver().setup();
+        GridLauncherV3.main(new String[] { "-port", "4444" });
         GridLauncherV3.main(new String[] { "-role", "node", "-hub",
                 "http://localhost:4444/grid/register", "-browser",
-                "browserName=chrome", "-port", "5555" });
-
+                "browserName=chrome", "-port", "4443" });
+    
         DesiredCapabilities dc = DesiredCapabilities.chrome();
-
+    
         dc = DesiredCapabilities.chrome();
-        // // driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), dc);
         driver = new RemoteWebDriver(dc);
     }
-
-    @AfterEach
-    public void tearDown() throws InterruptedException {
+    
+    @AfterAll
+    public static void tearDown() throws InterruptedException {
         driver.quit();
     }  
 
@@ -41,5 +38,10 @@ public class BaseTest {
     public void executionTest() {
         driver.get("https://ranking.rakuten.co.jp/");
         System.out.println("---------------");
+    }
+
+    @Test
+    public void test2() {
+        System.out.println("===============");
     }
 }
